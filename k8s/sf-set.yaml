@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dolos
+  name: dolos-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dolos-app
+  serviceName: "dolos-service"
+  template:
+    metadata:
+      labels:
+        app: dolos-app
+    spec:
+      containers:
+        - name: dolos-container
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos
+          command: ["dolos", "daemon", "--config", "/etc/dolos.toml"]
+          ports:
+            - containerPort: 50001
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+
+            - name: config-volume
+              mountPath: /etc/dolos.toml
+              subPath: dolos.toml
+
+        volumes:
+          - name: config-volume
+            configMap:
+              name: dolos-config
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data-volume
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 350Gi

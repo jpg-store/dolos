@@ -184,9 +184,11 @@ impl u5c::sync::sync_service_server::SyncService for SyncServiceImpl {
             .wal
             .read_block_page(from.as_ref(), len)
             .map_err(|_err| Status::internal("can't query block"))?
-            .filter(|x| match probe::block_era(x.body.as_ref()) {
-                probe::Outcome::EpochBoundary => false,
-                _ => true,
+            .filter(|x| {
+                !matches!(
+                    probe::block_era(x.body.as_ref()),
+                    probe::Outcome::EpochBoundary
+                )
             })
             .collect::<Vec<_>>();
 

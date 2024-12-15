@@ -71,7 +71,7 @@ impl LedgerStore {
         let mut wx = self.db().begin_write()?;
         wx.set_durability(Durability::Eventual);
 
-        for (slot, value) in cursors {
+        for (slot, _value) in cursors {
             tables::CursorTable::compact(&wx, slot)?;
             // tables::UtxosTable::compact(&wx, slot, &value.tombstones)?;
         }
