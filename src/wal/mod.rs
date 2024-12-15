@@ -118,7 +118,7 @@ pub enum WalError {
     #[error("slot not found in chain {0}")]
     SlotNotFound(BlockSlot),
 
-    #[error("IO error")]
+    #[error("IO error: {0}")]
     IO(#[source] Box<dyn std::error::Error + Send + Sync>),
 }
 

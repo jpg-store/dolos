@@ -8,7 +8,10 @@ spec:
   selector:
     matchLabels:
       app: dolos-app
-  serviceName: "dolos-service"
+
+  updateStrategy:
+    type: RollingUpdate
+
   template:
     metadata:
       labels:
@@ -16,22 +19,32 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-c9061b1
           command: ["dolos", "daemon", "--config", "/etc/dolos.toml"]
           ports:
-            - containerPort: 50001
+            - containerPort: 50051
+
           volumeMounts:
             - name: data-volume
-              mountPath: /data
+              mountPath: /var/data
+              readOnly: false
 
             - name: config-volume
               mountPath: /etc/dolos.toml
               subPath: dolos.toml
 
-        volumes:
-          - name: config-volume
-            configMap:
-              name: dolos-config
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "8"
+            limits:
+              memory: "8Gi"
+              cpu: "8"
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: dolos-config
 
   volumeClaimTemplates:
     - metadata:
@@ -40,4 +53,4 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 350Gi
+            storage: 250Gi

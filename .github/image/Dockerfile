@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 COPY genesis /etc/genesis
 
 ARG TARGETARCH
+
 COPY bin/dolos-Linux-${TARGETARCH} /bin/dolos
+
 RUN chmod +x /bin/dolos
 RUN ln -s /bin/dolos /dolos
 
