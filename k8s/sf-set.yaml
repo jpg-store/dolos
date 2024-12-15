@@ -12,6 +12,8 @@ spec:
   updateStrategy:
     type: RollingUpdate
 
+  serviceName: dolos-svc
+
   template:
     metadata:
       labels:
@@ -19,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-39df32e
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-ef3f5e9
           ports:
             - containerPort: 50051
 
@@ -28,10 +30,6 @@ spec:
               mountPath: /var/data
               readOnly: false
 
-            - name: config-volume
-              mountPath: /etc/dolos.toml
-              subPath: dolos.toml
-
           resources:
             requests:
               memory: "8Gi"
@@ -39,11 +37,6 @@ spec:
             limits:
               memory: "8Gi"
               cpu: "8"
-
-      volumes:
-        - name: config-volume
-          configMap:
-            name: dolos-config
 
   volumeClaimTemplates:
     - metadata:
