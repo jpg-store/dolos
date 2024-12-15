@@ -19,8 +19,7 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-c9061b1
-          command: ["dolos", "daemon", "--config", "/etc/dolos.toml"]
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-39df32e
           ports:
             - containerPort: 50051
 

@@ -8,7 +8,13 @@ ARG TARGETARCH
 
 COPY bin/dolos-Linux-${TARGETARCH} /bin/dolos
 
+COPY dolos.toml /etc/dolos.toml
+
+COPY entrypoint.sh /bin/entrypoint.sh
+
+RUN chmod +x /bin/entrypoint.sh
 RUN chmod +x /bin/dolos
+
 RUN ln -s /bin/dolos /dolos
 
-ENTRYPOINT [ "dolos" ]
+ENTRYPOINT [ "entrypoint.sh" ]
