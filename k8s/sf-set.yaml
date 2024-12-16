@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-067422c
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-dbb076b
           ports:
             - containerPort: 50051
 
@@ -45,4 +45,4 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 250Gi
+            storage: 375Gi
