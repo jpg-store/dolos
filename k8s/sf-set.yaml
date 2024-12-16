@@ -4,7 +4,7 @@ metadata:
   namespace: dolos
   name: dolos-app
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: dolos-app
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-5ecdd97
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-daddf2a
           ports:
             - containerPort: 50051
 
@@ -30,6 +30,26 @@ spec:
               mountPath: /var/data
               readOnly: false
 
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "2"
+            limits:
+              memory: "1Gi"
+              cpu: "2"
+
+      initContainers:
+        - name: dolos-init
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-daddf2a
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "dolos doctor rebuild-ledger --config /etc/dolos.toml && echo 'Ledger rebuilt successfully!' || echo 'Failed to rebuild ledger'",
+            ]
+          volumeMounts:
+            - name: data-volume
+              mountPath: /var/data
+              readOnly: false
           resources:
             requests:
               memory: "1Gi"

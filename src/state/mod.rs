@@ -15,7 +15,7 @@ pub mod redb;
 
 #[derive(Debug, Error)]
 pub enum LedgerError {
-    #[error("broken invariant")]
+    #[error("broken invariant {0}")]
     BrokenInvariant(#[source] BrokenInvariant),
 
     #[error("storage error")]

@@ -13,7 +13,7 @@ use crate::feedback::Feedback;
 pub struct Args;
 
 pub fn run(config: &crate::Config, _args: &Args, feedback: &Feedback) -> miette::Result<()> {
-    //crate::common::setup_tracing(&config.logging)?;
+    crate::common::setup_tracing(&config.logging)?;
 
     let progress = feedback.slot_progress_bar();
     progress.set_message("rebuilding ledger");

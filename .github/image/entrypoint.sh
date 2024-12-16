@@ -11,7 +11,7 @@ if echo "$BOOTSTRAP_OUTPUT" | grep -q "found existing data, skipping bootstrap";
 else
     echo "Removing ledger and rebuilding"
     rm -rf /var/data/ledger
-    dolos doctor rebuild-ledger
+    dolos doctor rebuild-ledger --config /etc/dolos.toml
 fi
 
 # Start the dolos daemon
