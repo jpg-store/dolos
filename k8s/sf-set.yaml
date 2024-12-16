@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-ef3f5e9
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-067422c
           ports:
             - containerPort: 50051
 
@@ -32,11 +32,11 @@ spec:
 
           resources:
             requests:
-              memory: "8Gi"
-              cpu: "8"
+              memory: "1Gi"
+              cpu: "2"
             limits:
-              memory: "8Gi"
-              cpu: "8"
+              memory: "1Gi"
+              cpu: "2"
 
   volumeClaimTemplates:
     - metadata:

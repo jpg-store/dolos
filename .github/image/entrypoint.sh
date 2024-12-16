@@ -1,8 +1,18 @@
-#! /bin/sh
+#!/bin/sh
 
-echo "Starting dolos bootstrap"
+echo "Starting dolos bootstrap from snapshot"
 
-# Create empty WAL
-dolos bootstrap relay --config /etc/dolos.toml && \
-  # Now you can run
-  dolos daemon --config /etc/dolos.toml
+# Run the bootstrap command and capture the output
+BOOTSTRAP_OUTPUT=$(dolos bootstrap snapshot --variant full --config /etc/dolos.toml)
+
+# Check if the output indicates existing data
+if echo "$BOOTSTRAP_OUTPUT" | grep -q "found existing data, skipping bootstrap"; then
+    echo "Bootstrap skipped due to existing data, skipping ledger removal and rebuild"
+else
+    echo "Removing ledger and rebuilding"
+    rm -rf /var/data/ledger
+    dolos doctor rebuild-ledger
+fi
+
+# Start the dolos daemon
+dolos daemon --config /etc/dolos.toml
