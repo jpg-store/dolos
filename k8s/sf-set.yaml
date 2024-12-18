@@ -19,50 +19,36 @@ spec:
       labels:
         app: dolos-app
     spec:
+      nodeSelector:
+        cloud.google.com/compute-class: "Performance"
+        cloud.google.com/machine-family: "c3"
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-daddf2a
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-2fac637
+          tty: true
+          stdin: true
           ports:
             - containerPort: 50051
 
           volumeMounts:
-            - name: data-volume
+            - name: data-volume3
               mountPath: /var/data
               readOnly: false
 
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "2"
+              memory: "1.5Gi"
+              cpu: "1"
             limits:
-              memory: "1Gi"
-              cpu: "2"
-
-      initContainers:
-        - name: dolos-init
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-daddf2a
-          command: ["/bin/sh", "-c"]
-          args:
-            [
-              "dolos doctor rebuild-ledger --config /etc/dolos.toml && echo 'Ledger rebuilt successfully!' || echo 'Failed to rebuild ledger'",
-            ]
-          volumeMounts:
-            - name: data-volume
-              mountPath: /var/data
-              readOnly: false
-          resources:
-            requests:
-              memory: "1Gi"
-              cpu: "2"
-            limits:
-              memory: "1Gi"
-              cpu: "2"
+              memory: "1.5Gi"
+              cpu: "1"
 
   volumeClaimTemplates:
     - metadata:
-        name: data-volume
+        name: data-volume3
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 375Gi
+            storage: 400Gi
+        storageClassName: hyperdisk-balanced
