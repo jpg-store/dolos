@@ -59,11 +59,6 @@ impl mithril_client::feedback::FeedbackReceiver for MithrilFeedback {
                 size,
                 ..
             } => {
-                debug!(
-                    downloaded_bytes = downloaded_bytes,
-                    size = size,
-                    "downloading snapshot"
-                );
                 self.download_pb.set_length(size);
                 self.download_pb.set_position(downloaded_bytes);
                 self.download_pb.set_message("downloading Mithril snapshot");
