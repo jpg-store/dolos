@@ -224,7 +224,7 @@ fn import_hardano_into_wal(
 }
 
 pub fn run(config: &crate::Config, args: &Args, feedback: &Feedback) -> miette::Result<()> {
-    //crate::common::setup_tracing(&config.logging)?;
+    crate::common::setup_tracing(&config.logging)?;
 
     let mithril = config
         .mithril

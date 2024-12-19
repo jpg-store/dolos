@@ -44,7 +44,6 @@ pub struct Args {
 }
 
 pub fn run(config: &crate::Config, args: &Args, feedback: &Feedback) -> miette::Result<()> {
-    crate::common::setup_tracing(&config.logging)?;
     let wal = crate::common::open_wal(config)?;
 
     if !wal.is_empty().into_diagnostic()? {

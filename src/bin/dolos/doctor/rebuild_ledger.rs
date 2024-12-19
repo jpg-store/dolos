@@ -84,7 +84,7 @@ pub fn run(config: &crate::Config, _args: &Args, feedback: &Feedback) -> miette:
 
     debug!("WAL crawled. Importing blocks");
 
-    for chunk in remaining.chunks(1000).into_iter() {
+    for chunk in remaining.chunks(100).into_iter() {
         let bodies = chunk.map(|RawBlock { body, .. }| body).collect_vec();
 
         let blocks: Vec<_> = bodies

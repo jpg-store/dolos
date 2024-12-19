@@ -7,5 +7,5 @@ allowVolumeExpansion: true
 parameters:
   type: hyperdisk-balanced
   provisioned-iops-on-create: "10000"
-  provisioned-throughput-on-create: "1000Mi"
+  provisioned-throughput-on-create: "2000Mi"
 volumeBindingMode: WaitForFirstConsumer
