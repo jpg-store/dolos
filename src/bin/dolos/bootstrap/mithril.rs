@@ -59,18 +59,25 @@ impl mithril_client::feedback::FeedbackReceiver for MithrilFeedback {
                 size,
                 ..
             } => {
+                debug!(
+                    downloaded_bytes = downloaded_bytes,
+                    size = size,
+                    "downloading snapshot"
+                );
                 self.download_pb.set_length(size);
                 self.download_pb.set_position(downloaded_bytes);
                 self.download_pb.set_message("downloading Mithril snapshot");
             }
             mithril_client::feedback::MithrilEvent::SnapshotDownloadCompleted { .. } => {
                 self.download_pb.set_message("snapshot download completed");
+                debug!("snapshot download completed");
             }
             mithril_client::feedback::MithrilEvent::CertificateChainValidationStarted {
                 ..
             } => {
                 self.validate_pb
                     .set_message("certificate chain validation started");
+                debug!("certificate chain validation started");
             }
             mithril_client::feedback::MithrilEvent::CertificateValidated {
                 certificate_hash: hash,
@@ -78,6 +85,8 @@ impl mithril_client::feedback::FeedbackReceiver for MithrilFeedback {
             } => {
                 self.validate_pb
                     .set_message(format!("validating cert: {hash}"));
+
+                debug!("certificate validated: {hash}");
             }
             mithril_client::feedback::MithrilEvent::CertificateChainValidated { .. } => {
                 self.validate_pb.set_message("certificate chain validated");
