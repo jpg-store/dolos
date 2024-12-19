@@ -24,7 +24,7 @@ spec:
         cloud.google.com/machine-family: "c3"
       containers:
         - name: dolos-container
-          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-94435e0
+          image: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos:sha-9290dc5
           tty: true
           stdin: true
           ports:
