@@ -1,15 +1,13 @@
-name: Docker
+name: Docker and Release
 on:
   push:
     branches:
       - lyra
     tags:
       - "v*"
-
 jobs:
   build:
     continue-on-error: true
-
     strategy:
       matrix:
         include:
@@ -17,37 +15,29 @@ jobs:
             build_on: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             args: "--locked --release"
-
           # - release_for: Linux-arm64
           #   build_on: buildjet-2vcpu-ubuntu-2204-arm
           #   target: "aarch64-unknown-linux-gnu"
           #   args: "--locked --release"
-
     runs-on: ${{ matrix.build_on }}
-
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: "release"
-
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --target ${{ matrix.target }} ${{ matrix.args }}
-
       - name: rename binaries
         run: |
           mv target/${{ matrix.target }}/release/dolos${{ matrix.ext }} dolos-${{ matrix.release_for }}${{ matrix.ext }}
-
       - name: upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -57,21 +47,16 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: [build]
-
     permissions:
       contents: read
       packages: write
-
     env:
       IMAGE: us-central1-docker.pkg.dev/comet-7aaf0/comet-ar/dolos
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -83,28 +68,21 @@ jobs:
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{version}}
             type=sha
-
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           registry: us-central1-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: binaries-*
           merge-multiple: true
           path: .github/image/bin
-
-      # we need to rename the artifact so that the name matches
-      # the value that Docker uses for TARGET_ARCH to keep the
-      # Dockerfile simple
       - name: Rename artifacts
         run: |+
           mv .github/image/bin/dolos-Linux-x86_64 .github/image/bin/dolos-Linux-amd64
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -113,3 +91,25 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  release:
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binaries-*
+          merge-multiple: true
+          path: release-binaries
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-binaries/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
