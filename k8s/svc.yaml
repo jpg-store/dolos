@@ -12,3 +12,17 @@ spec:
     - protocol: TCP
       port: 80 # External port
       targetPort: 50051 # Port used by the container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dolos-app-internal-svc
+  namespace: dolos
+spec:
+  type: ClusterIP
+  selector:
+    app: dolos-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 50051
